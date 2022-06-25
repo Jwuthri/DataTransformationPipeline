@@ -1,2 +1,2 @@
-# Decepticon-
+# Decepticon
 Deep learning for all
