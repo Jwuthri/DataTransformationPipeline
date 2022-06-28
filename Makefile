@@ -1,5 +1,3 @@
-.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3
-
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
@@ -54,6 +52,14 @@ else
 	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
 endif
 
+## Start the conda env
+conda_start:
+	@echo "please run >>> conda activate decepticon"
+
+## Shutdown the conda env
+conda_stop:
+	@echo "please run >>> conda deactivate"
+
 ## Set up python interpreter environment
 create_environment:
 ifeq (True,$(HAS_CONDA))
@@ -63,7 +69,7 @@ ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
 else
 	conda create --name $(PROJECT_NAME) python=2.7
 endif
-		@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
+	@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
 else
 	$(PYTHON_INTERPRETER) -m pip install -q virtualenv virtualenvwrapper
 	@echo ">>> Installing virtualenvwrapper if not already installed.\nMake sure the following lines are in shell startup file\n\
