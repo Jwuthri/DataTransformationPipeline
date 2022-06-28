@@ -51,7 +51,6 @@ class PipelineTransform(object):
         pool = self.set_pool()
         res = pool.map(process_single_mp, df_splitted)
         pool.close()
-        print()
 
     @staticmethod
     def read_data(input_file: str, chunksize: int):
