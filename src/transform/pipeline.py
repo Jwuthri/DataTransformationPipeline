@@ -65,7 +65,7 @@ class PipelineTransform:
         """
         return mp.Pool(self.njobs)
 
-    def process_single(self, df: pd.DataFrame) -> pd.DataFrame:
+    def process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         > The function takes a pipeline and a dataframe as input, and returns a dataframe as output
         
@@ -77,7 +77,7 @@ class PipelineTransform:
         """
         return self.pipeline.fit_transform(df)
 
-    def process_multiple(self, df: pd.DataFrame) -> pd.DataFrame:
+    def mp_process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         > It splits the dataframe into njobs parts, then it uses a pool of workers to process each part of
         the dataframe
@@ -88,8 +88,7 @@ class PipelineTransform:
         """
         df_splitted = np.array_split(df, self.njobs)
         pool = self.set_pool()
-        res = pool.map(self.process_single, df_splitted)
-        pool.join()
+        res = pool.map(self.process, df_splitted)
         pool.close()
 
         return res
@@ -122,23 +121,20 @@ class PipelineTransform:
         :type chunksize: int
         :return: A dataframe
         """
-        nrows: int = 0
-        list_dfs: List[pd.DataFrame] = []
+        transformed_dfs: List[pd.DataFrame] = []
         for chunk_df in self.read_data(input_file, chunksize):
-            chunk_df_size = len(chunk_df)
             if DEBUG:
-                LOGGER.info(f"working on rows {nrows} to {nrows + chunk_df_size}")
+                LOGGER.info(f"working on rows {chunk_df.index.min()} to {chunk_df.index.max()}")
                 LOGGER.info(chunk_df.info(memory_usage='deep'))
-            nrows += chunk_df_size
-            list_dfs.append(self.process_multiple(self.pipeline, chunk_df))
+            transformed_dfs.extend(self.mp_process(chunk_df))
 
-        return list_dfs
+        return pd.concat(transformed_dfs)
 
 
 if __name__ == '__main__':
     pipe = Pipeline([
-        ('selector', Selecter(columns=['stripped_text', 'label']))
+        ('selector', Selecter(columns=['macro_text', 'account_id']))
     ])
-    pp = PipelineTransform(pipe, njobs=1)
-    res = pp.main("../../data/raw/macro_suggestion_experiment.csv")
+    pp = PipelineTransform(pipe, njobs=5)
+    res = pp.transform("/home/julien/Documents/Github/Decepticon/data/raw/macro_export.csv", 1000)
     print(res)

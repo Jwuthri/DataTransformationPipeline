@@ -4,7 +4,7 @@ from rich.logging import RichHandler
 
 
 # DEBUG
-DEBUG = False
+DEBUG = True
 
 # LOG
 logging.basicConfig(level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
