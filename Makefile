@@ -54,7 +54,7 @@ endif
 
 ## Start the conda env
 conda_start:
-	@echo "please run >>> conda activate decepticon"
+	@echo "please run >>> conda activate $(PROJECT_NAME)"
 
 ## Shutdown the conda env
 conda_stop:
@@ -65,9 +65,9 @@ create_environment:
 ifeq (True,$(HAS_CONDA))
 		@echo ">>> Detected conda, creating conda environment."
 ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
-	conda create --name $(PROJECT_NAME) python=3
+	conda create --name $(PROJECT_NAME) python=3.7
 else
-	conda create --name $(PROJECT_NAME) python=2.7
+	conda create --name $(PROJECT_NAME) python=3.10
 endif
 	@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
 else
@@ -77,6 +77,10 @@ else
 	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 endif
+
+## Remove created environment
+delete_environment:
+	conda env remove --name ${PROJECT_NAME}
 
 ## Test python environment is setup correctly
 test_environment:
