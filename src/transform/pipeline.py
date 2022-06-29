@@ -88,10 +88,10 @@ class PipelineTransform:
         """
         df_splitted = np.array_split(df, self.njobs)
         pool = self.set_pool()
-        res = pool.map(self.process, df_splitted)
+        datas = pool.map(self.process, df_splitted)
         pool.close()
 
-        return res
+        return pd.concat(datas)
 
     @staticmethod
     def read_data(input_file: str, chunksize: int) -> List[pd.DataFrame]:
@@ -101,8 +101,7 @@ class PipelineTransform:
         
         :param input_file: The path to the file you want to read
         :type input_file: str
-        :param chunksize: The number of rows to read in at a time. If None, then all rows are read in at
-        once
+        :param chunksize: The number of rows to read in at a time. If None, then all rows are read.
         :type chunksize: int
         :return: A list of dataframes.
         """
@@ -126,7 +125,7 @@ class PipelineTransform:
             if DEBUG:
                 LOGGER.info(f"working on rows {chunk_df.index.min()} to {chunk_df.index.max()}")
                 LOGGER.info(chunk_df.info(memory_usage='deep'))
-            transformed_dfs.extend(self.mp_process(chunk_df))
+            transformed_dfs.append(self.mp_process(chunk_df))
 
         return pd.concat(transformed_dfs)
 
