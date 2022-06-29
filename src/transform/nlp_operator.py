@@ -45,3 +45,19 @@ class NlpTextExpansion(BaseEstimator):
 
         return x
   
+
+class NlpRemoveStopwords(BaseEstimator):
+    pass
+
+
+class NlpTextToToken(BaseEstimator):
+    pass
+
+
+class NlpWordLemmatizer(BaseEstimator):
+    pass
+
+
+class NlpWordStemmer(BaseEstimator):
+    pass
+
