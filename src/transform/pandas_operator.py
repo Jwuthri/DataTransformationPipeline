@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Dict, Any
 
 from sklearn.base import BaseEstimator
 
@@ -17,23 +17,7 @@ class DataFrameColumnsSelection(BaseEstimator):
         return x[self.columns]
 
 
-class DataFrameTextFormat(BaseEstimator):
-
-    def __init__(self, columns: List[str], format: str = "lower") -> None:
-        assert format.lower() in ["lower", "upper", "capitalize"]
-        self.columns = columns
-        self.format = format.lower()
-
-    def fit(self, x: Any, y: Any = None) -> __qualname__:
-        return self
-
-    def transform(self, x: Any) -> pd.DataFrame:
-        x[self.columns] = getattr(x[self.columns].str, self.format)()
-
-        return x
-
-
-class DataFrameDropEmptyRows(BaseEstimator):
+class DataFrameDropColumns(BaseEstimator):
 
     def __init__(self, columns: List[str]) -> None:
         self.columns = columns
@@ -42,7 +26,47 @@ class DataFrameDropEmptyRows(BaseEstimator):
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        return x[x[self.columns].notnull()]
+        return x.drop(columns=self.columns)
+
+
+class PandasRenameColumns(BaseEstimator):
+
+    def __init__(self, columns_mapping: Dict[str, str]) -> None:
+        self.colucolumns_mappingmns = columns_mapping
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        return x.rename(columns=self.columns_mapping)
+
+
+class DataFrameTextFormat(BaseEstimator):
+
+    def __init__(self, column: str, format: str = "lower") -> None:
+        assert format.lower() in ["lower", "upper", "capitalize"]
+        self.column = column
+        self.format = format.lower()
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x[self.column] = getattr(x[self.column].str, self.format)()
+
+        return x
+
+
+class DataFrameDropEmptyRows(BaseEstimator):
+
+    def __init__(self, column: str) -> None:
+        self.column = column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        return x[x[self.column].notnull()]
 
 
 class DataFrameTextLength(BaseEstimator):
@@ -73,3 +97,7 @@ class DataFrameTextNumberWords(BaseEstimator):
         x[self.number_column] = x[self.text_column].str.split().str.len()
 
         return x
+
+
+class DataFrameValueFrequency(BaseEstimator):
+    pass
