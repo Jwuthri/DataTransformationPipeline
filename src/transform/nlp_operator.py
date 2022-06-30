@@ -95,11 +95,11 @@ class NlpTextToSentences(BaseEstimator):
 
         return self
     
-    def text_to_tokens(self, text: str) -> List[str]:
+    def text_to_sentences(self, text: str) -> List[str]:
         return [sentence.text for sentence in self.nlp(text).sents]
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.new_column] = x[self.text_column].apply(self.text_to_tokens)
+        x[self.new_column] = x[self.text_column].apply(self.text_to_sentences)
 
         return x
 

@@ -17,7 +17,7 @@ class DataFrameColumnsSelection(BaseEstimator):
         return x[self.columns]
 
 
-class DataFrameDropColumns(BaseEstimator):
+class DataFrameColumnsDrop(BaseEstimator):
 
     def __init__(self, columns: List[str]) -> None:
         self.columns = columns
@@ -29,7 +29,7 @@ class DataFrameDropColumns(BaseEstimator):
         return x.drop(columns=self.columns)
 
 
-class PandasRenameColumns(BaseEstimator):
+class DataFrameColumnsRename(BaseEstimator):
 
     def __init__(self, columns_mapping: Dict[str, str]) -> None:
         self.columns_mapping = columns_mapping
@@ -126,6 +126,24 @@ class DataFrameValueFrequency(BaseEstimator):
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.new_column] = x[self.text_column].str.split().str.len()
+        x[self.new_column] = x.groupby(self.text_column)[self.text_column].transform("count")
+
+        return x
+
+
+class DataFrameExplodeColumn(BaseEstimator):
+
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x = x.explode(self.text_column)
 
         return x

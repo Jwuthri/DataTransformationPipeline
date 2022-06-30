@@ -41,7 +41,7 @@ class PipelineTransform:
         if njobs == -1:
             njobs = max_number_cpu
         else:
-            njobs = min(njobs, max_number_cpu)
+            njobs = max(1, min(njobs, max_number_cpu))
 
         return njobs
 
