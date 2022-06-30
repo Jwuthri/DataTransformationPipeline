@@ -86,6 +86,11 @@ delete_environment:
 test_environment:
 	$(PYTHON_INTERPRETER) test_environment.py
 
+## Install spacy models
+install_spacy_models:
+	$(PYTHON_INTERPRETER) -m spacy download en_core_web_sm
+	$(PYTHON_INTERPRETER) -m spacy download xx_ent_wiki_sm
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################

@@ -32,7 +32,7 @@ class DataFrameDropColumns(BaseEstimator):
 class PandasRenameColumns(BaseEstimator):
 
     def __init__(self, columns_mapping: Dict[str, str]) -> None:
-        self.colucolumns_mappingmns = columns_mapping
+        self.columns_mapping = columns_mapping
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
@@ -43,61 +43,89 @@ class PandasRenameColumns(BaseEstimator):
 
 class DataFrameTextFormat(BaseEstimator):
 
-    def __init__(self, column: str, format: str = "lower") -> None:
+    def __init__(self, text_column: str, new_column: str = None, format: str = "lower") -> None:
         assert format.lower() in ["lower", "upper", "capitalize"]
-        self.column = column
         self.format = format.lower()
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.column] = getattr(x[self.column].str, self.format)()
+        x[self.new_column] = getattr(x[self.text_column].str, self.format)()
 
         return x
 
 
 class DataFrameDropEmptyRows(BaseEstimator):
 
-    def __init__(self, column: str) -> None:
-        self.column = column
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        return x[x[self.column].notnull()]
+        return x[x[self.text_column].notnull()]
 
 
 class DataFrameTextLength(BaseEstimator):
 
-    def __init__(self, text_column: str, length_column: str) -> None:
+    def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
-        self.length_column = length_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.length_column] = x[self.text_column].str.len()
+        x[self.new_column] = x[self.text_column].str.len()
     
         return x
 
 
 class DataFrameTextNumberWords(BaseEstimator):
 
-    def __init__(self, text_column: str, number_column: str) -> None:
+    def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
-        self.number_column = number_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.number_column] = x[self.text_column].str.split().str.len()
+        x[self.new_column] = x[self.text_column].str.split().str.len()
 
         return x
 
 
 class DataFrameValueFrequency(BaseEstimator):
-    pass
+
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x[self.new_column] = x[self.text_column].str.split().str.len()
+
+        return x

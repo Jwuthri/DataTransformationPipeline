@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import emot
 import spacy
@@ -12,9 +12,12 @@ import pandas as pd
 
 class NlpDetectLanguage(BaseEstimator):
 
-    def __init__(self, text_column: str, lang_column: str) -> None:
+    def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
-        self.lang_column = lang_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
@@ -29,39 +32,109 @@ class NlpDetectLanguage(BaseEstimator):
             return 'UNKNOWN'
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.lang_column] = x[self.text_column].map(self.detect_language)
+        x[self.new_column] = x[self.text_column].map(self.detect_language)
 
         return x
 
 
 class NlpWordExpansion(BaseEstimator):
 
-    def __init__(self, text_column: str, lang_column: str) -> None:
+    def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
-        self.lang_column = lang_column
+        self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.lang_column] = x[self.text_column].apply(lambda txt: contractions.fix(txt))
+        x[self.new_column] = x[self.text_column].apply(contractions.fix)
 
         return x
   
 
 class NlpRemoveStopwords(BaseEstimator):
-    pass
+    
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        self.nlp = spacy.load("en_core_web_sm")
+
+        return self
+    
+    def remove_stopwords(self, text: str) -> str:
+        doc = self.nlp(text)
+        text_no_stopwords = []
+        for token in doc:
+            if not token.is_stop:
+                text_no_stopwords.append(token.text_with_ws)
+
+        return "".join(text_no_stopwords)
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x[self.new_column] = x[self.text_column].apply(self.remove_stopwords)
+
+        return x
+
+
+class NlpTextToSentences(BaseEstimator):
+
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        self.nlp = spacy.load("en_core_web_sm")
+
+        return self
+    
+    def text_to_tokens(self, text: str) -> List[str]:
+        return [sentence.text for sentence in self.nlp(text).sents]
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x[self.new_column] = x[self.text_column].apply(self.text_to_tokens)
+
+        return x
 
 
 class NlpTextToWords(BaseEstimator):
-    pass
+
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        self.nlp = spacy.load("en_core_web_sm")
+
+        return self
+    
+    def text_to_tokens(self, text: str) -> List[str]:
+        return [token.text for token in self.nlp(text)]
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x[self.new_column] = x[self.text_column].apply(self.text_to_tokens)
+
+        return x
 
 
 class NlpSpeechTagging(BaseEstimator):
 
-    def __init__(self, column: str, new_column: str) -> None:
-        self.column = column
-        self.new_column = new_column
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
     
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         self.nlp = spacy.load("en_core_web_sm")
@@ -80,15 +153,19 @@ class NlpSpeechTagging(BaseEstimator):
 
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.new_column] = x[self.column].map(self.pos)
+        x[self.new_column] = x[self.text_column].map(self.pos)
 
         return x
 
 
 class NlpWordLemmatizer(BaseEstimator):
     
-    def __init__(self, column: str) -> None:
-        self.column = column
+    def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         self.nlp = spacy.load("en_core_web_sm")
@@ -102,15 +179,19 @@ class NlpWordLemmatizer(BaseEstimator):
         return " ".join(tokens)
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.column] = x[self.column].map(self.lemmatize)
+        x[self.new_column] = x[self.text_column].map(self.lemmatize)
 
         return x
 
 
 class NlpReplaceEmojis(BaseEstimator):
 
-    def __init__(self, column: str, how: str = "replace") -> None:
-        self.column = column
+    def __init__(self, text_column: str, new_column: str = None, how: str = "replace") -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
         self.how = how
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
@@ -129,15 +210,19 @@ class NlpReplaceEmojis(BaseEstimator):
         return text
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.column] = x[self.column].map(self.clean_emojis)
+        x[self.new_column] = x[self.text_column].map(self.clean_emojis)
 
         return x
 
 
 class NlpReplaceEmoticons(BaseEstimator):
 
-    def __init__(self, column: str, how: str = "replace") -> None:
-        self.column = column
+    def __init__(self, text_column: str, new_column: str = None, how: str = "replace") -> None:
+        self.text_column = text_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
         self.how = how
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
@@ -156,6 +241,6 @@ class NlpReplaceEmoticons(BaseEstimator):
         return text
 
     def transform(self, x: Any) -> pd.DataFrame:
-        x[self.column] = x[self.column].map(self.clean_emoticons)
+        x[self.new_column] = x[self.text_column].map(self.clean_emoticons)
 
         return x

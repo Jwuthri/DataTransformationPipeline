@@ -4,22 +4,11 @@ import multiprocessing as mp
 import pandas as pd
 import numpy as np
 
-from sklearn.base import BaseEstimator
 from sklearn.pipeline import Pipeline
 
 from src.settings import DEBUG, LOGGER
+from src.transform.pandas_operator import DataFrameColumnsSelection
 
-
-class Selecter(BaseEstimator):
-
-    def __init__(self, columns):
-        self.columns = columns
-
-    def fit(self, x, y=None):
-        return self
-
-    def transform(self, x):
-        return x[self.columns]
 
 
 class PipelineTransform:
@@ -132,7 +121,7 @@ class PipelineTransform:
 
 if __name__ == '__main__':
     pipe = Pipeline([
-        ('selector', Selecter(columns=['macro_text', 'account_id']))
+        ('selector', DataFrameColumnsSelection(columns=['macro_text', 'account_id']))
     ])
     pp = PipelineTransform(pipe, njobs=5)
     res = pp.transform("/home/julien/Documents/Github/Decepticon/data/raw/macro_export.csv", 1000)
