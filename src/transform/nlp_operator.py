@@ -55,6 +55,7 @@ class NlpWordExpansion(BaseEstimator):
 class NlpRemoveStopwords(BaseEstimator):
     
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.nlp = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -84,6 +85,7 @@ class NlpRemoveStopwords(BaseEstimator):
 class NlpTextToSentences(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.nlp = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -107,6 +109,7 @@ class NlpTextToSentences(BaseEstimator):
 class NlpTextToWords(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.nlp = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -130,6 +133,7 @@ class NlpTextToWords(BaseEstimator):
 class NlpSpeechTagging(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.nlp = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -151,7 +155,6 @@ class NlpSpeechTagging(BaseEstimator):
 
         return pd.DataFrame(pos_tagging, columns=['token', 'lemma', 'pos', 'tag', 'dependency', 'sentiment', 'shape', 'is_alpha', 'is_stopwords']).to_dict('records')
 
-
     def transform(self, x: Any) -> pd.DataFrame:
         x[self.new_column] = x[self.text_column].map(self.pos)
 
@@ -161,6 +164,7 @@ class NlpSpeechTagging(BaseEstimator):
 class NlpWordLemmatizer(BaseEstimator):
     
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        self.nlp = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -187,6 +191,7 @@ class NlpWordLemmatizer(BaseEstimator):
 class NlpReplaceEmojis(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None, how: str = "replace") -> None:
+        self.emot_obj = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -218,6 +223,7 @@ class NlpReplaceEmojis(BaseEstimator):
 class NlpReplaceEmoticons(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None, how: str = "replace") -> None:
+        self.emot_obj = None
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
