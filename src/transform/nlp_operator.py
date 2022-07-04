@@ -250,3 +250,27 @@ class NlpReplaceEmoticons(BaseEstimator):
         x[self.new_column] = x[self.text_column].map(self.clean_emoticons)
 
         return x
+
+
+class NlpRemoveCharacterRepetition(BaseEstimator):
+    pass
+
+
+class NlpRemoveWordRepetition(BaseEstimator):
+    pass
+
+
+    # @staticmethod
+    # def _replace_group(match):
+    #     char, repetition = match.groups()
+
+    #     return char
+    # def replace_char_rep(self, text: str):
+    #     char_rep = re.compile(r"(\S)(\1{2,})")
+
+    #     return char_rep.sub(self._replace_group, text)
+
+    # def replace_words_rep(self, text: str):
+    #     word_rep = re.compile(r"(\b\w+\W+)(\1{2,})")
+
+    #     return word_rep.sub(self._replace_group, text)
