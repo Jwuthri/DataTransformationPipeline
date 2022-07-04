@@ -189,11 +189,18 @@ class DataFrameDeDuplicatesSpace(BaseEstimator):
         x[self.new_column] = x[self.text_column].map(self.remove_multiple_spaces)
 
         return x
-        
-
-class DatFrameMergeColumns(BaseEstimator):
-    pass
 
 
 class DataFrameInplodeColumn(BaseEstimator):
-    pass
+    
+    def __init__(self, key_column: str, agg_column: str) -> None:
+        self.key_column = key_column
+        self.agg_column = agg_column
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        x = x.groupby([self.key_column]).agg({self.agg_column: lambda x: x.tolist()}).reset_index()
+
+        return x
