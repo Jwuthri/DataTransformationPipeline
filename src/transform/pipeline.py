@@ -4,16 +4,18 @@ import multiprocessing as mp
 import pandas as pd
 import numpy as np
 
+from sklearn import set_config
 from sklearn.pipeline import Pipeline
 
 from src.settings import DEBUG, LOGGER
-from src.transform.pandas_operator import DataFrameColumnsSelection
+from src.transform.pandas_operator import *
+from src.transform.nlp_operator import *
 
 
 
 class PipelineTransform:
 
-    def __init__(self, pipeline: Pipeline, njobs: int = 2) -> None:
+    def __init__(self, pipeline: Pipeline, njobs: int = 1) -> None:
         """
         > This function takes a pipeline and a number of jobs as input and sets the number of jobs to the
         number of jobs inputted if the number of jobs is greater than 0, otherwise it sets the number of
@@ -95,9 +97,9 @@ class PipelineTransform:
         :return: A list of dataframes.
         """
         if chunksize is None:
-            return [pd.read_csv(input_file)]
+            return [pd.read_csv(input_file, encoding="latin1", nrows=100)]
         else:
-            return pd.read_csv(input_file, chunksize=chunksize)
+            return pd.read_csv(input_file, encoding="latin1", chunksize=chunksize)
 
     def transform(self, input_file: str, chunksize: int = None) -> pd.DataFrame:
         """
@@ -121,8 +123,17 @@ class PipelineTransform:
 
 if __name__ == '__main__':
     pipe = Pipeline([
-        ('selector', DataFrameColumnsSelection(columns=['macro_text', 'account_id']))
+        ('DataFrameColumnsSelection', DataFrameColumnsSelection(columns=['text', 'polarity'])),
+        ("DataFrameTextLength", DataFrameTextLength("text", "text_length")),
+        ("DataFrameTextNumberWords", DataFrameTextNumberWords("text", "number_words")),
+        ("DataFrameValueFrequency", DataFrameValueFrequency("polarity", "freq")),
+        ("DataFrameQueryFilter", DataFrameQueryFilter("number_words", query=">10")),
+        ("NlpDetectLanguage", NlpDetectLanguage("text", "lang")),
+        ("NlpSpeechTagging", NlpSpeechTagging("text", "pos")),
+        
     ])
-    pp = PipelineTransform(pipe, njobs=5)
-    res = pp.transform("/home/julien/Documents/Github/Decepticon/data/raw/macro_export.csv", 1000)
+    set_config(display="diagram")
+    print(pipe)
+    pp = PipelineTransform(pipe, njobs=1)
+    res = pp.transform("/home/jwuthri/Documents/Github/Decepticon/data/raw/imdb_dataset.csv", None)
     print(res)

@@ -5,6 +5,18 @@ from sklearn.base import BaseEstimator
 import pandas as pd
 
 
+class DataFrameReadCsv(BaseEstimator):
+
+    def __init__(self, path: str) -> None:
+        self.path = path
+
+    def fit(self, x: Any, y: Any = None) -> __qualname__:
+        return self
+
+    def transform(self, x: Any) -> pd.DataFrame:
+        return pd.read_csv(self.path)
+
+
 class DataFrameColumnsSelection(BaseEstimator):
 
     def __init__(self, columns: List[str]) -> None:
@@ -151,13 +163,9 @@ class DataFrameExplodeColumn(BaseEstimator):
 
 class DataFrameQueryFilter(BaseEstimator):
 
-    def __init__(self, text_column: str, new_column: str = None, query: str = "< 10") -> None:
+    def __init__(self, text_column: str, query: str) -> None:
         self.text_column = text_column
         self.query = query
-        if new_column is None:
-            self.new_column = text_column
-        else:
-            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self

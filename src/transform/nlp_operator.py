@@ -509,29 +509,6 @@ class NlpDeDuplicatesSpace(BaseEstimator):
         return x
 
 
-class NlpRemoveCharacterRepetition(BaseEstimator):
-
-    def __init__(self, text_column: str, new_column: str = None) -> None:
-        self.text_column = text_column
-        if new_column is None:
-            self.new_column = text_column
-        else:
-            self.new_column = new_column
-
-    def fit(self, x: Any, y: Any = None) -> __qualname__:
-        return self
-
-    @staticmethod
-    def remove_multiple_spaces(text: str):
-        return re.sub(" {2,}", " ", text)
-
-    def transform(self, x: Any) -> pd.DataFrame:
-        x[self.new_column] = x[self.text_column].map(self.remove_multiple_spaces)
-
-        return x
-
-
-
 class NlpReplaceWordRepetition(BaseEstimator):
 
     def __init__(self, text_column: str, new_column: str = None) -> None:
@@ -589,17 +566,3 @@ class NlpRemoveCharRepetition(BaseEstimator):
         x[self.new_column] = x[self.text_column].map(self.replace_char_rep)
 
         return x
-    # @staticmethod
-    # def _replace_group(match):
-    #     char, repetition = match.groups()
-
-    #     return char
-    # def replace_char_rep(self, text: str):
-    #     char_rep = re.compile(r"(\S)(\1{2,})")
-
-    #     return char_rep.sub(self._replace_group, text)
-
-    # def replace_words_rep(self, text: str):
-    #     word_rep = re.compile(r"(\b\w+\W+)(\1{2,})")
-
-    #     return word_rep.sub(self._replace_group, text)
