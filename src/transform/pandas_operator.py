@@ -1,5 +1,4 @@
 from typing import List, Dict, Any
-import re
 
 from sklearn.base import BaseEstimator
 
@@ -169,28 +168,6 @@ class DataFrameQueryFilter(BaseEstimator):
         return x
 
 
-class DataFrameDeDuplicatesSpace(BaseEstimator):
-
-    def __init__(self, text_column: str, new_column: str = None) -> None:
-        self.text_column = text_column
-        if new_column is None:
-            self.new_column = text_column
-        else:
-            self.new_column = new_column
-
-    def fit(self, x: Any, y: Any = None) -> __qualname__:
-        return self
-
-    @staticmethod
-    def remove_multiple_spaces(text: str):
-        return re.sub(" {2,}", " ", text)
-
-    def transform(self, x: Any) -> pd.DataFrame:
-        x[self.new_column] = x[self.text_column].map(self.remove_multiple_spaces)
-
-        return x
-
-
 class DataFrameInplodeColumn(BaseEstimator):
     
     def __init__(self, key_column: str, agg_column: str) -> None:
@@ -202,5 +179,19 @@ class DataFrameInplodeColumn(BaseEstimator):
 
     def transform(self, x: Any) -> pd.DataFrame:
         x = x.groupby([self.key_column]).agg({self.agg_column: lambda x: x.tolist()}).reset_index()
+
+        return x
+
+
+class DataFrameToCsv(BaseEstimator):
+
+    def __init__(self, output_path: str) -> None:
+        self.output_path = output_path
+
+    def fit(self, x, y=None) -> __qualname__:
+        return self
+
+    def transform(self, x) -> pd.DataFrame:
+        x.to_csv(self.output_path, index=False)
 
         return x
