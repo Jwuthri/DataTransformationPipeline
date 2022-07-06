@@ -122,6 +122,9 @@ class PipelineTransform:
 
 
 if __name__ == '__main__':
+    from src.data.settings import IMDB_DATA_PATH
+
+
     pipe = Pipeline([
         ('DataFrameColumnsSelection', DataFrameColumnsSelection(columns=['text', 'polarity'])),
         ("DataFrameTextLength", DataFrameTextLength("text", "text_length")),
@@ -135,5 +138,5 @@ if __name__ == '__main__':
     set_config(display="diagram")
     print(pipe)
     pp = PipelineTransform(pipe, njobs=1)
-    res = pp.transform("/home/jwuthri/Documents/Github/Decepticon/data/raw/imdb_dataset.csv", None)
+    res = pp.transform(IMDB_DATA_PATH, None)
     print(res)
