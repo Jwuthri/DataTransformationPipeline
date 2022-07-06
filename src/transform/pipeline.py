@@ -10,17 +10,16 @@ from sklearn.pipeline import Pipeline
 from src.settings import DEBUG, LOGGER
 from src.transform.pandas_operator import *
 from src.transform.nlp_operator import *
-
+from src.utils.decorator import timeit
 
 
 class PipelineTransform:
-
     def __init__(self, pipeline: Pipeline, njobs: int = 1) -> None:
         """
         > This function takes a pipeline and a number of jobs as input and sets the number of jobs to the
         number of jobs inputted if the number of jobs is greater than 0, otherwise it sets the number of
         jobs to 2
-        
+
         :param pipeline: The pipeline object that will be used to train the model
         :type pipeline: Pipeline
         :param njobs: number of jobs to run in parallel, defaults to 2
@@ -33,7 +32,7 @@ class PipelineTransform:
         """
         > If the number of jobs is -1, then set the number of jobs to the number of CPUs minus 1.
         Otherwise, set the number of jobs to the minimum of the number of jobs and the number of CPUs
-        
+
         :param njobs: number of parallel jobs to run. If -1, then the number of jobs is set to the
         number of CPU cores on your system minus 1
         :type njobs: int
@@ -59,7 +58,7 @@ class PipelineTransform:
     def process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         > The function takes a pipeline and a dataframe as input, and returns a dataframe as output
-        
+
         :param pipeline: Pipeline
         :type pipeline: Pipeline
         :param df: The dataframe to be processed
@@ -72,7 +71,7 @@ class PipelineTransform:
         """
         > It splits the dataframe into njobs parts, then it uses a pool of workers to process each part of
         the dataframe
-        
+
         :param df: pd.DataFrame
         :type df: pd.DataFrame
         :return: A dataframe
@@ -89,7 +88,7 @@ class PipelineTransform:
         """
         > Reads a CSV file into a Pandas DataFrame, either as a single DataFrame or as a list of
         DataFrames, depending on the value of the chunksize parameter
-        
+
         :param input_file: The path to the file you want to read
         :type input_file: str
         :param chunksize: The number of rows to read in at a time. If None, then all rows are read.
@@ -97,14 +96,15 @@ class PipelineTransform:
         :return: A list of dataframes.
         """
         if chunksize is None:
-            return [pd.read_csv(input_file, encoding="latin1", nrows=100)]
+            return [pd.read_csv(input_file, encoding="latin1", nrows=10)]
         else:
             return pd.read_csv(input_file, encoding="latin1", chunksize=chunksize)
 
+    @timeit
     def transform(self, input_file: str, chunksize: int = None) -> pd.DataFrame:
         """
         > It reads a file in chunks, processes each chunk, and returns a list of dataframes
-        
+
         :param input_file: input file to read
         :type input_file: str
         :param chunksize: how to split dataset into chunks
@@ -115,26 +115,32 @@ class PipelineTransform:
         for chunk_df in self.read_data(input_file, chunksize):
             if DEBUG:
                 LOGGER.info(f"working on rows {chunk_df.index.min()} to {chunk_df.index.max()}")
-                LOGGER.info(chunk_df.info(memory_usage='deep'))
+                LOGGER.info(chunk_df.info(memory_usage="deep"))
             transformed_dfs.append(self.mp_process(chunk_df))
 
         return pd.concat(transformed_dfs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from src.data.settings import IMDB_DATA_PATH
 
-
-    pipe = Pipeline([
-        ('DataFrameColumnsSelection', DataFrameColumnsSelection(columns=['text', 'polarity'])),
-        ("DataFrameTextLength", DataFrameTextLength("text", "text_length")),
-        ("DataFrameTextNumberWords", DataFrameTextNumberWords("text", "number_words")),
-        ("DataFrameValueFrequency", DataFrameValueFrequency("polarity", "freq")),
-        ("DataFrameQueryFilter", DataFrameQueryFilter("number_words", query=">10")),
-        ("NlpDetectLanguage", NlpDetectLanguage("text", "lang")),
-        ("NlpSpeechTagging", NlpSpeechTagging("text", "pos")),
-        
-    ])
+    pipe = Pipeline(
+        [
+            (
+                "DataFrameColumnsSelection",
+                DataFrameColumnsSelection(columns=["text", "polarity"]),
+            ),
+            ("DataFrameTextLength", DataFrameTextLength("text", "text_length")),
+            (
+                "DataFrameTextNumberWords",
+                DataFrameTextNumberWords("text", "number_words"),
+            ),
+            ("DataFrameValueFrequency", DataFrameValueFrequency("polarity", "freq")),
+            ("DataFrameQueryFilter", DataFrameQueryFilter("number_words", query=">10")),
+            ("NlpDetectLanguage", NlpDetectLanguage("text", "lang")),
+            ("NlpSpeechTagging", NlpSpeechTagging("text", "pos")),
+        ]
+    )
     set_config(display="diagram")
     print(pipe)
     pp = PipelineTransform(pipe, njobs=1)

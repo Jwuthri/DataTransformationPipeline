@@ -34,7 +34,11 @@ clean:
 
 ## Lint using flake8
 lint:
-	flake8 src
+	flake8 src/
+
+## Run black command
+format:
+	black src/ --line-length 120
 
 ## Upload Data to S3
 sync_data_to_s3:
@@ -90,6 +94,10 @@ test_environment:
 install_spacy_models:
 	$(PYTHON_INTERPRETER) -m spacy download en_core_web_sm
 	$(PYTHON_INTERPRETER) -m spacy download xx_ent_wiki_sm
+
+## Run all tests
+run_tests:
+	pytest src/
 
 #################################################################################
 # PROJECT RULES                                                                 #

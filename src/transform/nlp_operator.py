@@ -18,7 +18,7 @@ class NlpDetectLanguage(BaseEstimator):
         """
         The function takes in a text column and a new column name, and if the new column name is not
         specified, it will use the text column name as the new column name
-        
+
         :param text_column: The column containing the text you want to clean
         :type text_column: str
         :param new_column: The name of the new column that will be created. If not specified, the new
@@ -39,7 +39,7 @@ class NlpDetectLanguage(BaseEstimator):
         """
         It takes a string as input, removes all non-printable characters, and then uses the detect()
         function from the langdetect library to detect the language of the string
-        
+
         :param message: str
         :type message: str
         :return: The language of the message.
@@ -49,13 +49,13 @@ class NlpDetectLanguage(BaseEstimator):
         if reliable:
             return detected_language[0][0]
         else:
-            return 'UNKNOWN'
+            return "UNKNOWN"
 
     def transform(self, x: Any) -> pd.DataFrame:
         """
         The function takes a dataframe, and a column name, and returns a new dataframe with a new column
         that contains the language of the text in the original column
-        
+
         :param x: Any - the dataframe that will be passed to the transform method
         :type x: Any
         :return: A dataframe with a new column called 'language'
@@ -66,11 +66,10 @@ class NlpDetectLanguage(BaseEstimator):
 
 
 class NlpWordExpansion(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         """
         This function takes in a text column and a new column name and returns a None
-        
+
         :param text_column: The column containing the text you want to process
         :type text_column: str
         :param new_column: The name of the new column that will contain the cleaned text. If not
@@ -86,7 +85,7 @@ class NlpWordExpansion(BaseEstimator):
     def transform(self, x: Any) -> pd.DataFrame:
         """
         Remove the word's contractions from a dataframe column
-        
+
         :param x: Any - the dataframe that you want to transform
         :type x: Any
         :return: A dataframe with the new column added.
@@ -94,7 +93,7 @@ class NlpWordExpansion(BaseEstimator):
         x[self.new_column] = x[self.text_column].apply(contractions.fix)
 
         return x
-  
+
 
 class NlpRemoveStopwords(BaseEstimator):
     """It's a class that takes a list of stopwords and removes them from a list of words."""
@@ -103,7 +102,7 @@ class NlpRemoveStopwords(BaseEstimator):
         """
         This function takes in a text column and a new column name and returns a new column with the new
         column name
-        
+
         :param text_column: The column in the dataframe that contains the text to be processed
         :type text_column: str
         :param new_column: The name of the new column that will be created in the dataframe
@@ -120,14 +119,14 @@ class NlpRemoveStopwords(BaseEstimator):
         self.nlp = spacy.load("en_core_web_sm")
 
         return self
-    
+
     def remove_stopwords(self, text: str) -> str:
         """
         It takes a string of text, creates a spaCy document, iterates through the tokens in the
-        document, and if the token is not a stopword, it adds the token to a list. 
-        
+        document, and if the token is not a stopword, it adds the token to a list.
+
         The function then returns the list as a string
-        
+
         :param text: The text to be processed
         :type text: str
         :return: A string
@@ -144,7 +143,7 @@ class NlpRemoveStopwords(BaseEstimator):
         """
         The function takes in a dataframe, and a column name, and returns a dataframe with a new column
         that has the stopwords removed from the original column
-        
+
         :param x: Any - the dataframe that will be passed to the transform method
         :type x: Any
         :return: A dataframe with the new column added.
@@ -161,7 +160,7 @@ class NlpTextToSentences(BaseEstimator):
         """
         This function takes in a text column and a new column name and returns a new column with the new
         column name
-        
+
         :param text_column: The column in the dataframe that contains the text to be processed
         :type text_column: str
         :param new_column: The name of the new column that will be created in the dataframe
@@ -178,12 +177,12 @@ class NlpTextToSentences(BaseEstimator):
         self.nlp = spacy.load("en_core_web_sm")
 
         return self
-    
+
     def text_to_sentences(self, text: str) -> List[str]:
         """
         It takes a string of text and returns a list of strings, where each string is a sentence from
         the original text
-        
+
         :param text: The text to be split into sentences
         :type text: str
         :return: A list of strings.
@@ -203,7 +202,7 @@ class NlpTextToWords(BaseEstimator):
         """
         This function takes in a text column and a new column name and returns a new column with the new
         column name
-        
+
         :param text_column: The column in the dataframe that contains the text to be processed
         :type text_column: str
         :param new_column: The name of the new column that will be created in the dataframe
@@ -220,11 +219,11 @@ class NlpTextToWords(BaseEstimator):
         self.nlp = spacy.load("en_core_web_sm")
 
         return self
-    
+
     def text_to_tokens(self, text: str) -> List[str]:
         """
         It takes a string of text and returns a list of tokens
-        
+
         :param text: The text to be tokenized
         :type text: str
         :return: A list of tokens
@@ -235,7 +234,7 @@ class NlpTextToWords(BaseEstimator):
         """
         The function takes a dataframe, and a column of text, and returns a dataframe with a new column
         of tokens
-        
+
         :param x: Any - the dataframe that will be passed to the transform function
         :type x: Any
         :return: A dataframe with the new column added.
@@ -252,7 +251,7 @@ class NlpSpeechTagging(BaseEstimator):
         """
         This function takes in a text column and a new column name and returns a new column with the new
         column name
-        
+
         :param text_column: The column in the dataframe that contains the text to be processed
         :type text_column: str
         :param new_column: The name of the new column that will be created in the dataframe
@@ -264,7 +263,7 @@ class NlpSpeechTagging(BaseEstimator):
             self.new_column = text_column
         else:
             self.new_column = new_column
-    
+
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         self.nlp = spacy.load("en_core_web_sm")
 
@@ -274,7 +273,7 @@ class NlpSpeechTagging(BaseEstimator):
         """
         The function takes a string as input, and returns a dictionary of the tokens, lemmas, parts of
         speech, tags, dependencies, sentiment, shape, is_alpha, and is_stopwords
-        
+
         :param text: The text to be processed
         :type text: str
         :return: A dictionary of records
@@ -283,16 +282,39 @@ class NlpSpeechTagging(BaseEstimator):
         pos_tagging = []
         for token in doc:
             pos_tagging.append(
-                [token.text, token.lemma_, token.pos_, token.tag_, token.dep_, token.sentiment, token.shape_, token.is_alpha, token.is_stop]
+                [
+                    token.text,
+                    token.lemma_,
+                    token.pos_,
+                    token.tag_,
+                    token.dep_,
+                    token.sentiment,
+                    token.shape_,
+                    token.is_alpha,
+                    token.is_stop,
+                ]
             )
 
-        return pd.DataFrame(pos_tagging, columns=['token', 'lemma', 'pos', 'tag', 'dependency', 'sentiment', 'shape', 'is_alpha', 'is_stopwords']).to_dict('records')
+        return pd.DataFrame(
+            pos_tagging,
+            columns=[
+                "token",
+                "lemma",
+                "pos",
+                "tag",
+                "dependency",
+                "sentiment",
+                "shape",
+                "is_alpha",
+                "is_stopwords",
+            ],
+        ).to_dict("records")
 
     def transform(self, x: Any) -> pd.DataFrame:
         """
         The function takes a dataframe, and a column of text, and returns a dataframe with a new column
         of text that has been transformed by the function
-        
+
         :param x: Any - the dataframe that you want to transform
         :type x: Any
         :return: A dataframe with the new column added.
@@ -309,7 +331,7 @@ class NlpWordLemmatizer(BaseEstimator):
         """
         This function takes in a text column and a new column name and returns a new column with the new
         column name
-        
+
         :param text_column: The column in the dataframe that contains the text you want to process
         :type text_column: str
         :param new_column: The name of the new column that will be created in the dataframe
@@ -326,19 +348,19 @@ class NlpWordLemmatizer(BaseEstimator):
         self.nlp = spacy.load("en_core_web_sm")
 
         return self
-    
+
     def lemmatize(self, text: str) -> str:
         """
-        The function takes a string as input, and returns a string as output. 
-        
-        The input string is passed to the nlp object, which is a spaCy object. 
-        
-        The nlp object returns a doc object, which is a spaCy object. 
-        
-        The doc object is iterated over, and each token is lemmatized. 
-        
+        The function takes a string as input, and returns a string as output.
+
+        The input string is passed to the nlp object, which is a spaCy object.
+
+        The nlp object returns a doc object, which is a spaCy object.
+
+        The doc object is iterated over, and each token is lemmatized.
+
         The lemmatized tokens are returned as a string.
-        
+
         :param text: The text to be lemmatized
         :type text: str
         :return: A string of lemmatized tokens
@@ -352,7 +374,7 @@ class NlpWordLemmatizer(BaseEstimator):
         """
         The function takes in a dataframe, and returns a dataframe with a new column that is the
         lemmatized version of the text column
-        
+
         :param x: Any - the dataframe that you want to transform
         :type x: Any
         :return: A dataframe with a new column called 'lemmatized_text'
@@ -370,7 +392,7 @@ class NlpReplaceEmojis(BaseEstimator):
         The function takes in a text column, a new column, and a how parameter. If the new column is not
         specified, the new column is set to the text column. The how parameter is set to replace by
         default.
-        
+
         :param text_column: The column in the dataframe that contains the text you want to clean
         :type text_column: str
         :param new_column: The name of the new column that will be created. If None, the name of the
@@ -395,16 +417,16 @@ class NlpReplaceEmojis(BaseEstimator):
     def clean_emojis(self, text: str) -> str:
         """
         It takes a string and returns a string with emojis replaced with their meanings or removed
-        
+
         :param text: The text to be cleaned
         :type text: str
         :return: A dictionary with the following keys:
         """
         emojis = self.emot_obj.emoji(text)
-        if emojis['flag']:
+        if emojis["flag"]:
             for index in range(len(emojis) - 1, -1, -1):
-                target_value = emojis['mean'][index] if self.how == "replace" else ""
-                start, end = emojis['location'][index]
+                target_value = emojis["mean"][index] if self.how == "replace" else ""
+                start, end = emojis["location"][index]
                 text = text[:start] + target_value + text[end:]
 
         return text
@@ -414,7 +436,7 @@ class NlpReplaceEmojis(BaseEstimator):
         It takes a dataframe, and for each row in the dataframe, it takes the text in the column
         specified by the text_column parameter, and replaces all emojis with the text specified by the
         replace_with parameter
-        
+
         :param x: Any - the dataframe you want to transform
         :type x: Any
         :return: A dataframe with the new column added.
@@ -432,7 +454,7 @@ class NlpReplaceEmoticons(BaseEstimator):
         The function takes in a text column, a new column, and a how parameter. If the new column is not
         specified, the new column is set to the text column. The how parameter is set to replace by
         default.
-        
+
         :param text_column: The column in the dataframe that contains the text you want to clean
         :type text_column: str
         :param new_column: The name of the new column that will be created. If None, the name of the
@@ -464,10 +486,10 @@ class NlpReplaceEmoticons(BaseEstimator):
         :return: A dictionary with the following keys:
         """
         emoticons = self.emot_obj.emoticons(text)
-        if emoticons['flag']:
+        if emoticons["flag"]:
             for index in range(len(emoticons) - 1, -1, -1):
-                target_value = emoticons['mean'][index] if self.how == "replace" else ""
-                start, end = emoticons['location'][index]
+                target_value = emoticons["mean"][index] if self.how == "replace" else ""
+                start, end = emoticons["location"][index]
                 text = text[:start] + target_value + text[end:]
 
         return text
@@ -477,7 +499,7 @@ class NlpReplaceEmoticons(BaseEstimator):
         It takes a dataframe, and for each row in the dataframe, it takes the text in the column
         specified by the text_column parameter, and replaces the emoticons in that text with the
         corresponding word in the dictionary specified by the emoticons parameter
-        
+
         :param x: Any - the dataframe you want to transform
         :type x: Any
         :return: A dataframe with the new column added.
@@ -488,7 +510,6 @@ class NlpReplaceEmoticons(BaseEstimator):
 
 
 class NlpDeDuplicatesSpace(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -510,7 +531,6 @@ class NlpDeDuplicatesSpace(BaseEstimator):
 
 
 class NlpReplaceWordRepetition(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -529,7 +549,7 @@ class NlpReplaceWordRepetition(BaseEstimator):
 
     def replace_words_rep(self, text: str) -> str:
         word_rep = re.compile(r"(\b\w+\W+)(\1{2,})")
-        
+
         return word_rep.sub(self._replace_group, text)
 
     def transform(self, x: Any) -> pd.DataFrame:
@@ -538,9 +558,7 @@ class NlpReplaceWordRepetition(BaseEstimator):
         return x
 
 
-
 class NlpRemoveCharRepetition(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -556,10 +574,10 @@ class NlpRemoveCharRepetition(BaseEstimator):
         char, _ = match.groups()
 
         return char
-        
+
     def replace_char_rep(self, text: str) -> str:
         char_rep = re.compile(r"(\S)(\1{2,})")
-        
+
         return char_rep.sub(self._replace_group, text)
 
     def transform(self, x: Any) -> pd.DataFrame:

@@ -6,7 +6,6 @@ import pandas as pd
 
 
 class DataFrameReadCsv(BaseEstimator):
-
     def __init__(self, path: str) -> None:
         self.path = path
 
@@ -18,7 +17,6 @@ class DataFrameReadCsv(BaseEstimator):
 
 
 class DataFrameColumnsSelection(BaseEstimator):
-
     def __init__(self, columns: List[str]) -> None:
         self.columns = columns
 
@@ -30,7 +28,6 @@ class DataFrameColumnsSelection(BaseEstimator):
 
 
 class DataFrameColumnsDrop(BaseEstimator):
-
     def __init__(self, columns: List[str]) -> None:
         self.columns = columns
 
@@ -42,7 +39,6 @@ class DataFrameColumnsDrop(BaseEstimator):
 
 
 class DataFrameColumnsRename(BaseEstimator):
-
     def __init__(self, columns_mapping: Dict[str, str]) -> None:
         self.columns_mapping = columns_mapping
 
@@ -54,7 +50,6 @@ class DataFrameColumnsRename(BaseEstimator):
 
 
 class DataFrameTextFormat(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None, format: str = "lower") -> None:
         assert format.lower() in ["lower", "upper", "capitalize"]
         self.format = format.lower()
@@ -74,7 +69,6 @@ class DataFrameTextFormat(BaseEstimator):
 
 
 class DataFrameDropEmptyRows(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -90,7 +84,6 @@ class DataFrameDropEmptyRows(BaseEstimator):
 
 
 class DataFrameTextLength(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -103,12 +96,11 @@ class DataFrameTextLength(BaseEstimator):
 
     def transform(self, x: Any) -> pd.DataFrame:
         x[self.new_column] = x[self.text_column].str.len()
-    
+
         return x
 
 
 class DataFrameTextNumberWords(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -126,7 +118,6 @@ class DataFrameTextNumberWords(BaseEstimator):
 
 
 class DataFrameValueFrequency(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -144,7 +135,6 @@ class DataFrameValueFrequency(BaseEstimator):
 
 
 class DataFrameExplodeColumn(BaseEstimator):
-
     def __init__(self, text_column: str, new_column: str = None) -> None:
         self.text_column = text_column
         if new_column is None:
@@ -162,7 +152,6 @@ class DataFrameExplodeColumn(BaseEstimator):
 
 
 class DataFrameQueryFilter(BaseEstimator):
-
     def __init__(self, text_column: str, query: str) -> None:
         self.text_column = text_column
         self.query = query
@@ -177,7 +166,6 @@ class DataFrameQueryFilter(BaseEstimator):
 
 
 class DataFrameInplodeColumn(BaseEstimator):
-    
     def __init__(self, key_column: str, agg_column: str) -> None:
         self.key_column = key_column
         self.agg_column = agg_column
@@ -192,7 +180,6 @@ class DataFrameInplodeColumn(BaseEstimator):
 
 
 class DataFrameToCsv(BaseEstimator):
-
     def __init__(self, output_path: str) -> None:
         self.output_path = output_path
 
