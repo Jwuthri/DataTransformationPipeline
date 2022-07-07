@@ -1,4 +1,4 @@
-from typing import List
+from typing import Union
 import multiprocessing as mp
 
 import pandas as pd
@@ -101,18 +101,23 @@ class PipelineTransform:
             return pd.read_csv(input_file, encoding="latin1", chunksize=chunksize)
 
     @timeit
-    def transform(self, input_file: str, chunksize: int = None) -> pd.DataFrame:
+    def transform(self, input: Union[str, pd.DataFrame], chunksize: int = None) -> pd.DataFrame:
         """
-        > It reads a file in chunks, processes each chunk, and returns a list of dataframes
+        > It reads a file or dataframe in chunks, processes each chunk, and returns a list of dataframes
 
-        :param input_file: input file to read
-        :type input_file: str
+        :param input: input file to read or input pandas dataframe
+        :type input: Union[str, pd.DataFrame]
         :param chunksize: how to split dataset into chunks
         :type chunksize: int
         :return: A dataframe
         """
         transformed_dfs: List[pd.DataFrame] = []
-        for chunk_df in self.read_data(input_file, chunksize):
+        if isinstance(input, str):
+            chunks_df = self.read_data(input, chunksize)
+        else:
+            n = len(input) // chunksize
+            chunks_df = np.array_split(input, n)
+        for chunk_df in chunks_df:
             if DEBUG:
                 LOGGER.info(f"working on rows {chunk_df.index.min()} to {chunk_df.index.max()}")
                 LOGGER.info(chunk_df.info(memory_usage="deep"))
@@ -122,8 +127,6 @@ class PipelineTransform:
 
 
 if __name__ == "__main__":
-    from src.data.settings import IMDB_DATA_PATH
-
     pipe = Pipeline(
         [
             (

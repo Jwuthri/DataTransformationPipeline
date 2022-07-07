@@ -64,6 +64,10 @@ conda_start:
 conda_stop:
 	@echo "please run >>> conda deactivate"
 
+## Install requirements
+install_req:
+	pip install -r requirements.txt
+
 ## Set up python interpreter environment
 create_environment:
 ifeq (True,$(HAS_CONDA))
@@ -71,7 +75,7 @@ ifeq (True,$(HAS_CONDA))
 ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
 	conda create --name $(PROJECT_NAME) python=3.7
 else
-	conda create --name $(PROJECT_NAME) python=3.10
+	conda create --name $(PROJECT_NAME) python=3.7
 endif
 	@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
 else
