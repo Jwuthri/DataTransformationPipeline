@@ -7,6 +7,7 @@ import numpy as np
 from sklearn import set_config
 from sklearn.pipeline import Pipeline
 
+from src.fixtures.data import FIXTURE_DF
 from src.settings import DEBUG, LOGGER
 from src.transform.pandas_operator import *
 from src.transform.nlp_operator import *
@@ -96,7 +97,7 @@ class PipelineTransform:
         :return: A list of dataframes.
         """
         if chunksize is None:
-            return [pd.read_csv(input_file, encoding="latin1", nrows=10)]
+            return [pd.read_csv(input_file, encoding="latin1")]
         else:
             return pd.read_csv(input_file, encoding="latin1", chunksize=chunksize)
 
@@ -115,7 +116,7 @@ class PipelineTransform:
         if isinstance(input, str):
             chunks_df = self.read_data(input, chunksize)
         else:
-            n = len(input) // chunksize
+            n = 1 if chunksize is None else len(input) // chunksize
             chunks_df = np.array_split(input, n)
         for chunk_df in chunks_df:
             if DEBUG:
@@ -126,7 +127,7 @@ class PipelineTransform:
         return pd.concat(transformed_dfs)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     pipe = Pipeline(
         [
             (
@@ -147,5 +148,5 @@ if __name__ == "__main__":
     set_config(display="diagram")
     print(pipe)
     pp = PipelineTransform(pipe, njobs=1)
-    res = pp.transform(IMDB_DATA_PATH, None)
+    res = pp.transform(FIXTURE_DF, None)
     print(res)

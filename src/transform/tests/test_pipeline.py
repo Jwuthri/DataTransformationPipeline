@@ -1,11 +1,8 @@
-import pytest
-
 from src.transform.pipeline import *
-from src.data.settings import IMDB_DATA_PATH
+from src.fixtures.data import FIXTURE_DF, FIXTURE_PIPELINE_EXPECTED_OUTPUT
 
 
 def test_pipeline():
-    """Testing to load model in memory"""
     pipe = Pipeline(
         [
             (
@@ -23,7 +20,6 @@ def test_pipeline():
             ("NlpSpeechTagging", NlpSpeechTagging("text", "pos")),
         ]
     )
-    set_config(display="diagram")
     pp = PipelineTransform(pipe, njobs=1)
-    res = pp.transform(IMDB_DATA_PATH, None)
-    assert 1 == 1
+    res = pp.transform(FIXTURE_DF, None)
+    assert res.to_dict() == FIXTURE_PIPELINE_EXPECTED_OUTPUT
