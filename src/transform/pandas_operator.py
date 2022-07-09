@@ -69,12 +69,8 @@ class DataFrameTextFormat(BaseEstimator):
 
 
 class DataFrameDropEmptyRows(BaseEstimator):
-    def __init__(self, text_column: str, new_column: str = None) -> None:
+    def __init__(self, text_column: str) -> None:
         self.text_column = text_column
-        if new_column is None:
-            self.new_column = text_column
-        else:
-            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
@@ -135,12 +131,8 @@ class DataFrameValueFrequency(BaseEstimator):
 
 
 class DataFrameExplodeColumn(BaseEstimator):
-    def __init__(self, text_column: str, new_column: str = None) -> None:
+    def __init__(self, text_column: str) -> None:
         self.text_column = text_column
-        if new_column is None:
-            self.new_column = text_column
-        else:
-            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self
