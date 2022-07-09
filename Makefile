@@ -7,6 +7,7 @@ BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
 PROJECT_NAME = decepticon
 PYTHON_INTERPRETER = python
+version = 3.7
 
 ifeq (,$(shell which conda))
 HAS_CONDA=False
@@ -56,39 +57,11 @@ else
 	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
 endif
 
-## Start the conda env
-conda_start:
-	@echo "please run >>> conda activate $(PROJECT_NAME)"
-
-## Shutdown the conda env
-conda_stop:
-	@echo "please run >>> conda deactivate"
-
-## Install requirements
-install_req:
-	pip install -r requirements.txt
-
 ## Set up python interpreter environment
 create_environment:
-ifeq (True,$(HAS_CONDA))
-	@echo ">>> Detected conda, creating conda environment."
-ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
-	conda create --name $(PROJECT_NAME) python=3.7
-else
-	conda create --name $(PROJECT_NAME) python=3.7
-endif
-	@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
-else
 	$(PYTHON_INTERPRETER) -m pip install -q virtualenv virtualenvwrapper
-	@echo ">>> Installing virtualenvwrapper if not already installed.\nMake sure the following lines are in shell startup file\n\
-	export WORKON_HOME=$$HOME/.virtualenvs\nexport PROJECT_HOME=$$HOME/Devel\nsource /usr/local/bin/virtualenvwrapper.sh\n"
-	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
-endif
-
-## Remove created environment
-delete_environment:
-	conda env remove --name ${PROJECT_NAME}
+	rm -rf venv
+	virtualenv -p python$(version) venv
 
 ## Test python environment is setup correctly
 test_environment:
@@ -102,6 +75,10 @@ install_spacy_models:
 ## Run all tests
 run_tests:
 	pytest src/
+
+## Install requirements
+start: create_environment
+	pip install -r requirements.txt
 
 #################################################################################
 # PROJECT RULES                                                                 #
