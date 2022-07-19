@@ -20,5 +20,3 @@ PROCESSED_DATA = os.path.join(DATA_PATH, "processed")
 EXTERNAL_DATA = os.path.join(DATA_PATH, "external")
 INTERIM_DATA = os.path.join(DATA_PATH, "interim")
 RAW_DATA = os.path.join(DATA_PATH, "raw")
-
-FIXTURES_DATA = os.path.join(FIXTURES_PATH, "data.csv")

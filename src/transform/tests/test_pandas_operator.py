@@ -1,7 +1,5 @@
 import pytest
 
-import pandas as pd
-
 from src.transform.pandas_operator import *
 
 
@@ -20,7 +18,6 @@ def dataset():
             "polarity": [1, 0, 1]
         }
     )
-
 
 
 def test_DataFrameColumnsSelection(dataset):
