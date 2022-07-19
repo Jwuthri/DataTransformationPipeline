@@ -30,7 +30,6 @@ clean:
 ## Lint using flake8 && black
 lint:
 	black src/ --line-length 120
-	flake8 src/
 
 ## Set up python interpreter environment
 create_environment:

@@ -127,7 +127,7 @@ class PipelineTransform:
         return pd.concat(transformed_dfs)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     pipeline = Pipeline(
         [
             (
