@@ -10,7 +10,7 @@ def dataset():
 
 
 def test_pipeline(dataset):
-    pipe = Pipeline(
+    pipeline = Pipeline(
         [
             (
                 "DataFrameColumnsSelection",
@@ -26,13 +26,13 @@ def test_pipeline(dataset):
             ("NlpDetectLanguage", NlpDetectLanguage("text", "lang")),
         ]
     )
-    pp = PipelineTransform(pipe, njobs=1)
-    output = pp.transform(dataset, None)
+    transform = PipelineTransform(pipeline, njobs=1)
+    output = transform.transform(dataset, None)
     assert output.to_dict() == {'text': {1: 'Put aside Dr. House repeat missed, Desperate Housewives (new) watch one.', 2: "big fan Stephen King's work, film made even greater fan King. Pet Sematary Creed family."}, 'polarity': {1: 0, 2: 1}, 'number_words': {1: 11, 2: 15}, 'text_length': {1: 72, 2: 88}, 'freq': {1: 1, 2: 2}, 'lang': {1: 'ENGLISH', 2: 'ENGLISH'}}
 
 
 def test_pipeline_incorrect_result(dataset):
-    pipe = Pipeline(
+    pipeline = Pipeline(
         [
             (
                 "DataFrameColumnsSelection",
@@ -48,6 +48,6 @@ def test_pipeline_incorrect_result(dataset):
             ("NlpDetectLanguage", NlpDetectLanguage("text", "lang")),
         ]
     )
-    pp = PipelineTransform(pipe, njobs=1)
-    output = pp.transform(dataset, None)
+    transform = PipelineTransform(pipeline, njobs=1)
+    output = transform.transform(dataset, None)
     assert output.to_dict() != {'text': {1: 'Put aside dr. House repeat missed, Desperate Housewives (new) watch one.', 2: "big fan Stephen King's work, film made even greater fan King. Pet Sematary Creed family."}, 'polarity': {1: 0, 2: 1}, 'number_words': {1: 11, 2: 15}, 'text_length': {1: 72, 2: 88}, 'freq': {1: 1, 2: 2}, 'lang': {1: 'ENGLISH', 2: 'ENGLISH'}}

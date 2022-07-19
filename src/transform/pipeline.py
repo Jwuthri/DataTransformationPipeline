@@ -27,9 +27,9 @@ class PipelineTransform:
         :type njobs: int (optional)
         """
         self.pipeline = pipeline
-        self.njobs = self.set_njobs(njobs)
+        self.njobs = self.find_optimal_jobs(njobs)
 
-    def set_njobs(self, njobs: int) -> int:
+    def find_optimal_jobs(self, njobs: int) -> int:
         """
         > If the number of jobs is -1, then set the number of jobs to the number of CPUs minus 1.
         Otherwise, set the number of jobs to the minimum of the number of jobs and the number of CPUs
@@ -47,9 +47,9 @@ class PipelineTransform:
 
         return njobs
 
-    def set_pool(self) -> mp.Pool:
+    def _pool(self) -> mp.Pool:
         """
-        > The function `set_pool` returns a `Pool` object from the `multiprocessing` module, which is
+        > The function returns a `Pool` object from the `multiprocessing` module, which is
         initialized with the number of jobs specified in the `njobs` attribute of the `self` object
 
         :return: A Pool object.
@@ -78,7 +78,7 @@ class PipelineTransform:
         :return: A dataframe
         """
         df_splitted = np.array_split(df, self.njobs)
-        pool = self.set_pool()
+        pool = self._pool()
         datas = pool.map(self.process, df_splitted)
         pool.close()
 
@@ -128,7 +128,7 @@ class PipelineTransform:
 
 
 if __name__ == "__main__": 
-    pipe = Pipeline(
+    pipeline = Pipeline(
         [
             (
                 "DataFrameColumnsSelection",
@@ -146,7 +146,7 @@ if __name__ == "__main__":
         ]
     )
     set_config(display="diagram")
-    print(pipe)
-    pp = PipelineTransform(pipe, njobs=1)
-    res = pp.transform(FIXTURE_DF, None)
+    print(pipeline)
+    transform = PipelineTransform(pipeline, njobs=1)
+    res = transform.transform(FIXTURE_DF, None)
     print(res)

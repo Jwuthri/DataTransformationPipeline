@@ -4,16 +4,8 @@ from src.settings import LOGGER
 
 
 def timeit(method):
-    """
-    :param method:
-    :return:
-    """
+
     def wrapper(*args, **kw):
-        """
-        :param args:
-        :param kw:
-        :return:
-        """
         ts = time.time()
         result = method(*args, **kw)
         te = time.time()
