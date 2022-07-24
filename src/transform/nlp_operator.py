@@ -77,7 +77,10 @@ class NlpWordExpansion(BaseEstimator):
         :type new_column: str
         """
         self.text_column = text_column
-        self.new_column = new_column
+        if new_column is None:
+            self.new_column = text_column
+        else:
+            self.new_column = new_column
 
     def fit(self, x: Any, y: Any = None) -> __qualname__:
         return self

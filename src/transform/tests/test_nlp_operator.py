@@ -30,7 +30,7 @@ def test_NlpDetectLanguage(dataset):
 
 def test_NlpWordExpansion(dataset):
     dataset = dataset.copy()
-    pipe = NlpWordExpansion(text_column="text")
+    pipe = NlpWordExpansion(text_column="text", new_column="text2")
     pipe.fit(dataset)
     output = pipe.transform(dataset)
     assert output.to_dict() == {
@@ -43,7 +43,7 @@ def test_NlpWordExpansion(dataset):
             2: "big fan Stephen King's work, film made even greater fan King. Pet Sematary Creed family.",
         },
         "polarity": {0: 1, 1: 0, 2: 1},
-        None: {
+        "text2": {
             0: "first think another Disney movie, might good, it is kids movie.",
             1: "Put aside Dr. House repeat missed, Desperate Housewives (new) watch one.",
             2: "big fan Stephen King's work, film made even greater fan King. Pet Sematary Creed family.",
