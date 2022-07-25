@@ -513,7 +513,19 @@ class NlpReplaceEmoticons(BaseEstimator):
 
 
 class NlpDeDuplicatesSpace(BaseEstimator):
+    """It takes a list of strings, and returns a list of strings with duplicates removed."""
+
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        """
+        The function takes in a text column and a new column name, and if the new column name is not
+        specified, it will use the text column name as the new column name.
+        
+        :param text_column: The column containing the text you want to clean
+        :type text_column: str
+        :param new_column: The name of the new column that will be created. If not specified, the new
+        column will have the same name as the text column
+        :type new_column: str
+        """
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -525,16 +537,46 @@ class NlpDeDuplicatesSpace(BaseEstimator):
 
     @staticmethod
     def remove_multiple_spaces(text: str):
+        """
+        It replaces two or more spaces with a single space
+        
+        :param text: str
+        :type text: str
+        :return: A string with multiple spaces replaced by a single space.
+        """
         return re.sub(" {2,}", " ", text)
 
     def transform(self, x: Any) -> pd.DataFrame:
+        """
+        It takes a dataframe, and for each row in the dataframe, it takes the value of the column
+        specified by the text_column parameter, and applies the function specified by the
+        remove_multiple_spaces parameter to it. 
+        
+        The result is then stored in a new column, specified by the new_column parameter
+        
+        :param x: Any - the dataframe that will be passed to the transform method
+        :type x: Any
+        :return: A dataframe with the new column added.
+        """
         x[self.new_column] = x[self.text_column].map(self.remove_multiple_spaces)
 
         return x
 
-
+ 
 class NlpReplaceWordRepetition(BaseEstimator):
+    """It replaces word repetition with a single instance of the word"""
+
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        """
+        The function takes in a text column and a new column name, and if the new column name is not
+        specified, it will use the text column name as the new column name
+        
+        :param text_column: The column containing the text you want to clean
+        :type text_column: str
+        :param new_column: The name of the new column that will be created. If not specified, the new
+        column will have the same name as the text column
+        :type new_column: str
+        """
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -546,23 +588,59 @@ class NlpReplaceWordRepetition(BaseEstimator):
 
     @staticmethod
     def _replace_group(match):
+        """
+        It takes a match object and returns the first group
+        
+        :param match: The match object returned by the re.search() method
+        :return: The character that was matched.
+        """
         char, _ = match.groups()
 
         return char
 
     def replace_words_rep(self, text: str) -> str:
+        """
+        It takes a string, finds all the words that are repeated more than twice, and replaces them with
+        the first instance of the word
+        
+        :param text: str - the text to be processed
+        :type text: str
+        :return: the text with the repeated words replaced by the word itself and the number of times it
+        was repeated.
+        """
         word_rep = re.compile(r"(\b\w+\W+)(\1{2,})")
 
         return word_rep.sub(self._replace_group, text)
 
     def transform(self, x: Any) -> pd.DataFrame:
+        """
+        The function takes a dataframe, and a column of text, and replaces words in the text with a word
+        of your choice
+        
+        :param x: Any - the dataframe that you want to transform
+        :type x: Any
+        :return: A dataframe with the new column added.
+        """
         x[self.new_column] = x[self.text_column].map(self.replace_words_rep)
 
         return x
 
 
+
 class NlpRemoveCharRepetition(BaseEstimator):
+    """It removes repeated characters from a string."""
+
     def __init__(self, text_column: str, new_column: str = None) -> None:
+        """
+        The function takes in a text column and a new column name, and if the new column name is not
+        specified, it will use the text column name as the new column name
+        
+        :param text_column: The column containing the text you want to clean
+        :type text_column: str
+        :param new_column: The name of the new column that will be created. If not specified, the new
+        column will have the same name as the text column
+        :type new_column: str
+        """
         self.text_column = text_column
         if new_column is None:
             self.new_column = text_column
@@ -574,16 +652,39 @@ class NlpRemoveCharRepetition(BaseEstimator):
 
     @staticmethod
     def _replace_group(match):
+        """
+        It takes a match object and returns the first group
+        
+        :param match: The match object returned by the re.search() method
+        :return: The character that was matched.
+        """
         char, _ = match.groups()
 
         return char
 
     def replace_char_rep(self, text: str) -> str:
+        """
+        It takes a string, finds all the repeating characters, and replaces them with the character
+        followed by the number of times it repeats
+        
+        :param text: str
+        :type text: str
+        :return: the text with the repeated characters replaced by the character and the number of times
+        it was repeated.
+        """
         char_rep = re.compile(r"(\S)(\1{2,})")
 
         return char_rep.sub(self._replace_group, text)
 
     def transform(self, x: Any) -> pd.DataFrame:
+        """
+        The function takes a dataframe, and a column name, and replaces all the characters in the column
+        with the corresponding character in the dictionary
+        
+        :param x: Any - the dataframe that will be passed to the transform method
+        :type x: Any
+        :return: A dataframe with the new column added.
+        """
         x[self.new_column] = x[self.text_column].map(self.replace_char_rep)
 
         return x
