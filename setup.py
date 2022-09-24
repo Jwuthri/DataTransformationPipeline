@@ -1,10 +1,10 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='DPT',
+    name='DTP',
     packages=find_packages(),
     version='0.1.0',
-    description='Data Pipeline Transformation',
+    description='Data Transformation Pipeline',
     author='julien wuthrich',
     license='MIT',
 )
