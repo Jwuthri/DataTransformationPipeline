@@ -14,7 +14,7 @@ repos:
     pass_filenames: false
     language: system
     types: [python]
- - id: pytest
+  - id: pytest
     name: pytest - Check unit tests
     entry: pytest recommendation_system/ --cov -p no:warnings --doctest-modules
     pass_filenames: false

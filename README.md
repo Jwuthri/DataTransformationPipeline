@@ -1,10 +1,8 @@
-Decepticon
-==============================
-
-Deep learning for all
+DataTransformationPipeline
+==========================
 
 Project Organization
-------------
+--------------------
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
