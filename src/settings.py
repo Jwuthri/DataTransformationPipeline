@@ -14,7 +14,7 @@ LOGGER = logging.getLogger("rich")
 # PATH
 ABSOLUTE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(ABSOLUTE_PATH, "data")
-FIXTURES_PATH = os.path.join(ABSOLUTE_PATH, "src", "fixtures")
+FIXTURES_PATH = os.path.join(ABSOLUTE_PATH, "recommendation_system", "fixtures")
 
 PROCESSED_DATA = os.path.join(DATA_PATH, "processed")
 EXTERNAL_DATA = os.path.join(DATA_PATH, "external")

@@ -24,7 +24,7 @@ def test_NlpDetectLanguage(dataset):
             2: "big fan Stephen King's work, film made even greater fan King. Pet Sematary Creed family.",
         },
         "polarity": {0: 1, 1: 0, 2: 1},
-        "lang": {0: "ENGLISH", 1: "ENGLISH", 2: "ENGLISH"},
+        "lang": {0: "en", 1: "en", 2: "en"},
     }
 
 

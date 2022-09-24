@@ -23,13 +23,14 @@ class PipelineTransform:
 
         :param pipeline: The pipeline object that will be used to train the model
         :type pipeline: Pipeline
-        :param njobs: number of jobs to run in parallel, defaults to 2
+        :param njobs: number of jobs to run in parallel, defaults to 1
         :type njobs: int (optional)
         """
         self.pipeline = pipeline
         self.njobs = self.find_optimal_jobs(njobs)
 
-    def find_optimal_jobs(self, njobs: int) -> int:
+    @staticmethod
+    def find_optimal_jobs(njobs: int) -> int:
         """
         > If the number of jobs is -1, then set the number of jobs to the number of CPUs minus 1.
         Otherwise, set the number of jobs to the minimum of the number of jobs and the number of CPUs

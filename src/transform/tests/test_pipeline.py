@@ -37,7 +37,7 @@ def test_pipeline(dataset):
         "number_words": {1: 11, 2: 15},
         "text_length": {1: 72, 2: 88},
         "freq": {1: 1, 2: 2},
-        "lang": {1: "ENGLISH", 2: "ENGLISH"},
+        "lang": {1: "en", 2: "en"},
     }
 
 

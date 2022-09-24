@@ -5,7 +5,7 @@ import emot
 import spacy
 import contractions
 
-from pycld2 import detect
+from langdetect import detect
 from sklearn.base import BaseEstimator
 
 import pandas as pd
@@ -45,11 +45,9 @@ class NlpDetectLanguage(BaseEstimator):
         :return: The language of the message.
         """
         printable_message = "".join(x for x in message if x.isprintable())
-        reliable, _, detected_language = detect(printable_message)
-        if reliable:
-            return detected_language[0][0]
-        else:
-            return "UNKNOWN"
+        detected_language = detect(printable_message)
+
+        return detected_language
 
     def transform(self, x: Any) -> pd.DataFrame:
         """
